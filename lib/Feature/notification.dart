@@ -1,45 +1,66 @@
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:timezone/timezone.dart' as tz;
+import 'package:timezone/data/latest.dart' as tz;
 
+class NotificationService {
+  static final NotificationService _notificationService =
+      NotificationService._internal();
 
+  factory NotificationService() {
+    return _notificationService;
+  }
 
-class Notification {
+  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+      FlutterLocalNotificationsPlugin();
 
-  FlutterLocalNotificationsPlugin localNotification = FlutterLocalNotificationsPlugin();
+  NotificationService._internal();
 
+  Future<void> initNotification() async {
+    //settting Android
+    final AndroidInitializationSettings initializationSettingsAndroid =
+        AndroidInitializationSettings('@mipmap/ic_launcher');
 
-  @override
-  void initState() {
-    super.initState();
-    var settingsAndroid = const AndroidInitializationSettings('Flutter_devs');
-    var settings = 
-      InitializationSettings(android: settingsAndroid);
-      localNotification.initialize(settings);
-}
+    //setting iOs
+    final IOSInitializationSettings initializationSettingsIOS =
+        IOSInitializationSettings(
+      requestSoundPermission: false,
+      requestBadgePermission: false,
+      requestAlertPermission: false,
+    );
 
+    final InitializationSettings initializationSettings =
+        InitializationSettings(
+            android: initializationSettingsAndroid,
+            iOS: initializationSettingsIOS);
 
-  @override 
-  Future <dynamic> notification() async {
-    var android = const AndroidNotificationDetails('id', 'Meta', 'Notificação de meta alcançada',
-    playSound: true);
-    var platform = NotificationDetails(android: android);
-    await localNotification.show(
-      0, 'Flutter devs', 'Flutter local notification', platform,
-      payload: 'Você bateu sua meta!');
+    await flutterLocalNotificationsPlugin.initialize(initializationSettings);
+  }
+
+  Future<void> showNotification(
+      int id, String title, String body, int seconds) async {
+    await flutterLocalNotificationsPlugin.zonedSchedule(
+      id,
+      title,
+      body,
+      tz.TZDateTime.now(tz.local).add(Duration(seconds: seconds)),
+      const NotificationDetails(
+        android: AndroidNotificationDetails(
+            'channelId',
+            'channelName'
+                'Main channel notification',
+            importance: Importance.max,
+            priority: Priority.max,
+            icon: '@mipmap/ic_launcher'),
+        iOS: IOSNotificationDetails(
+          sound: 'default.wav',
+          presentAlert: true,
+          presentBadge: true,
+          presentSound: true,
+        ),
+      ),
+      uiLocalNotificationDateInterpretation:
+          UILocalNotificationDateInterpretation.absoluteTime,
+      androidAllowWhileIdle: true,
+    );
   }
 }
-
-
-  
-
-  //   Future<void> _proximitySensor() async{
-  //   _streamSubscription = ProximitySensor.events.listen((event){
-  //     setState((){
-  //       isNear = true;
-  //       if (isNear){
-  //         // Vibration.vibrate(duration: 1000, amplitude:128, repeat: 1);
-  //       } else {
-  //         isNear = false;
-  //       }
-  //      });
-  //   });
-  // }

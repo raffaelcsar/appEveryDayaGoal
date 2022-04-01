@@ -1,7 +1,11 @@
+import 'package:everydayagoal/Feature/notification.dart';
 import 'package:flutter/material.dart';
 import 'Screens/home.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+  NotificationService().initNotification();
+
   runApp(const MyApp());
 }
 
@@ -15,4 +19,3 @@ class MyApp extends StatelessWidget {
     );
   }
 }
-
