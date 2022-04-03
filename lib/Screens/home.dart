@@ -102,10 +102,10 @@ class _HomePageState extends State<HomePage> {
             Expanded(child: _googleMaps()),
           ],
         ),
-        _radialEfects(),
+        _radialEffects(),
         _countDays(),
+        // _buttonNotification(),
         _informationOfRun(),
-        _buttonNotification(),
       ],
     );
   }
@@ -120,45 +120,42 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget _radialEfects() {
+  Widget _radialEffects() {
     return Container(
       width: double.infinity,
       height: double.infinity,
       decoration: BoxDecoration(
-        gradient: RadialGradient(
+        gradient: LinearGradient(
           colors: [
-            Color.fromARGB(0, 255, 255, 255),
-            Color.fromARGB(0, 255, 255, 255),
-            Color.fromARGB(0, 255, 255, 255),
-            Color.fromARGB(0, 255, 255, 255),
             Colors.white,
+            Color.fromARGB(0, 255, 255, 255),
+            Color.fromARGB(0, 255, 255, 255),
           ],
-          center: Alignment.centerRight,
-          radius: 0.8,
+          stops: [0.4, 0.6, 1],
         ),
       ),
     );
   }
 
-  Widget _buttonNotification() {
-    return GestureDetector(
-      onTap: () {
-        NotificationService()
-            .showNotification(1, "Every Day a Goal", "Teste", 1);
-      },
-      child: Container(
-        height: 40,
-        width: 200,
-        color: Colors.deepPurple,
-        child: Center(
-          child: Text(
-            "Gerar Notificação!",
-            style: TextStyle(color: Colors.white),
-          ),
-        ),
-      ),
-    );
-  }
+  // Widget _buttonNotification() {
+  //   return GestureDetector(
+  //     onTap: () {
+  //       NotificationService()
+  //           .showNotification(1, "Every Day a Goal", "Teste", 1);
+  //     },
+  //     child: Container(
+  //       height: 40,
+  //       width: 200,
+  //       color: Colors.deepPurple,
+  //       child: Center(
+  //         child: Text(
+  //           "Gerar Notificação!",
+  //           style: TextStyle(color: Colors.white),
+  //         ),
+  //       ),
+  //     ),
+  //   );
+  // }
 
   Widget _countDays() {
     return Container(
@@ -192,13 +189,24 @@ class _HomePageState extends State<HomePage> {
       alignment: Alignment.bottomCenter,
       child: Container(
         width: double.infinity,
-        margin: EdgeInsets.fromLTRB(10, 0, 10, 40),
-        height: 100,
-        padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
+        margin: EdgeInsets.fromLTRB(0, 0, 0, 0),
+        height: 280,
+        padding: EdgeInsets.fromLTRB(20, 100, 20, 10),
+        decoration: BoxDecoration(
+            gradient: LinearGradient(
+                colors: [
+                  Colors.white,
+                  Color.fromARGB(0, 255, 255, 255),
+                ],
+                begin: Alignment.bottomCenter,
+                end: Alignment.topCenter,
+                stops: [0.7, 1])),
         child: Column(children: [
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
+              //Column on Distance
+
               Column(
                 children: [
                   Row(
@@ -213,12 +221,15 @@ class _HomePageState extends State<HomePage> {
                   Text(
                     ((_distance / 1000).toStringAsFixed(2)),
                     style: GoogleFonts.kanit(
-                        fontSize: 30,
+                        fontSize: 20,
                         fontWeight: FontWeight.w600,
                         color: Colors.deepPurple),
                   ),
                 ],
               ),
+
+              //Column on Speed
+
               Column(
                 children: [
                   Row(
@@ -232,12 +243,15 @@ class _HomePageState extends State<HomePage> {
                   Text(
                     _speed.toStringAsFixed(2),
                     style: GoogleFonts.kanit(
-                        fontSize: 30,
+                        fontSize: 20,
                         fontWeight: FontWeight.w600,
                         color: Colors.deepPurple),
                   ),
                 ],
               ),
+
+              // Column on Time
+
               Column(
                 children: [
                   Row(
@@ -263,7 +277,7 @@ class _HomePageState extends State<HomePage> {
                         return Text(
                           _displayTime!,
                           style: GoogleFonts.kanit(
-                              fontSize: 30,
+                              fontSize: 20,
                               fontWeight: FontWeight.w600,
                               color: Colors.deepPurple),
                         );
@@ -272,6 +286,7 @@ class _HomePageState extends State<HomePage> {
               ),
             ],
           ),
+          _buttonStartAndStop(),
         ]),
       ),
     );
@@ -288,6 +303,55 @@ class _HomePageState extends State<HomePage> {
           ),
         ],
       ),
+    );
+  }
+
+  Widget _buttonStartAndStop() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Padding(
+          padding: EdgeInsets.only(top: 30.0, right: 10.0),
+          child: GestureDetector(
+            onTap: () {
+              NotificationService()
+                  .showNotification(1, "Every Day a Goal", "Teste", 1);
+            },
+            child: Container(
+              width: 60,
+              height: 60,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.all(Radius.circular(30.0)),
+                color: Colors.deepPurple,
+              ),
+              child: Icon(
+                Icons.play_arrow,
+                size: 40,
+                color: Colors.white,
+              ),
+            ),
+          ),
+        ),
+        Padding(
+          padding: EdgeInsets.only(top: 30.0, left: 10.0),
+          child: GestureDetector(
+            onTap: () {
+              NotificationService()
+                  .showNotification(1, "Every Day a Goal", "Teste", 1);
+            },
+            child: Container(
+              width: 90,
+              height: 60,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.all(Radius.circular(30.0)),
+                color: Colors.redAccent,
+              ),
+              child: Icon(Icons.stop, size: 40, color: Colors.white),
+              // GestureDetector(onTap: () {}),
+            ),
+          ),
+        ),
+      ],
     );
   }
 }
