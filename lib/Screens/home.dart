@@ -5,6 +5,8 @@ import 'package:location/location.dart';
 import 'package:timezone/timezone.dart' as tz;
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:stop_watch_timer/stop_watch_timer.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -46,11 +48,41 @@ class _HomePageState extends State<HomePage> {
   @override
   void _createdMap(GoogleMapController controller) {
     _mapController = controller;
+    double appendDistance;
 
     _location.onLocationChanged.listen((event) {
       LatLng local = LatLng(event.latitude!, event.longitude!);
       _mapController!.animateCamera(CameraUpdate.newCameraPosition(
           CameraPosition(target: local, zoom: 18.0)));
+
+      if (route.length > 0) {
+        appendDistance = Geolocator.distanceBetween(route.last.latitude,
+            route.last.longitude, local.latitude, local.longitude);
+        _distance = _distance + appendDistance;
+        int timeDuration = (_time! - _lastTime!);
+
+        if (_lastTime != null && timeDuration != 0) {
+          _speed = (appendDistance / (timeDuration / 100)) * 3.6;
+
+          if (_speed != 0) {
+            _avgSpeed = _avgSpeed + _speed;
+            _speedCount++;
+          }
+        }
+      }
+      _lastTime = _time;
+      route.add(local);
+
+      polyline.add(Polyline(
+          polylineId: PolylineId(event.toString()),
+          visible: true,
+          points: route,
+          width: 5,
+          startCap: Cap.roundCap,
+          endCap: Cap.roundCap,
+          color: Colors.deepPurple));
+
+      setState(() {});
     });
   }
 
@@ -71,8 +103,9 @@ class _HomePageState extends State<HomePage> {
           ],
         ),
         _radialEfects(),
+        _countDays(),
+        _informationOfRun(),
         _buttonNotification(),
-        _countDays()
       ],
     );
   }
@@ -111,7 +144,7 @@ class _HomePageState extends State<HomePage> {
     return GestureDetector(
       onTap: () {
         NotificationService()
-            .showNotification(1, "Every Day a Goal", "Meta Alcançada", 1);
+            .showNotification(1, "Every Day a Goal", "Teste", 1);
       },
       child: Container(
         height: 40,
@@ -149,6 +182,110 @@ class _HomePageState extends State<HomePage> {
               fontWeight: FontWeight.bold,
             ),
           )
+        ],
+      ),
+    );
+  }
+
+  Widget _informationOfRun() {
+    return Align(
+      alignment: Alignment.bottomCenter,
+      child: Container(
+        width: double.infinity,
+        margin: EdgeInsets.fromLTRB(10, 0, 10, 40),
+        height: 100,
+        padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
+        child: Column(children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Column(
+                children: [
+                  Row(
+                    children: [
+                      Icon(Icons.show_chart_rounded,
+                          color: Colors.black, size: 30.0),
+                      Text("Distância",
+                          style: GoogleFonts.kanit(
+                              fontSize: 10, fontWeight: FontWeight.w300)),
+                    ],
+                  ),
+                  Text(
+                    ((_distance / 1000).toStringAsFixed(2)),
+                    style: GoogleFonts.kanit(
+                        fontSize: 30,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.deepPurple),
+                  ),
+                ],
+              ),
+              Column(
+                children: [
+                  Row(
+                    children: [
+                      Icon(Icons.speed, color: Colors.black, size: 30.0),
+                      Text("Velocidade",
+                          style: GoogleFonts.kanit(
+                              fontSize: 10, fontWeight: FontWeight.w300)),
+                    ],
+                  ),
+                  Text(
+                    _speed.toStringAsFixed(2),
+                    style: GoogleFonts.kanit(
+                        fontSize: 30,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.deepPurple),
+                  ),
+                ],
+              ),
+              Column(
+                children: [
+                  Row(
+                    children: [
+                      Icon(Icons.timer_outlined,
+                          color: Colors.black, size: 30.0),
+                      Text("Tempo",
+                          style: GoogleFonts.kanit(
+                              fontSize: 10, fontWeight: FontWeight.w300)),
+                    ],
+                  ),
+                  StreamBuilder<int>(
+                      stream: _stopWatchTimer.rawTime,
+                      initialData: 0,
+                      builder: (context, snap) {
+                        _time = snap.data;
+                        _displayTime =
+                            StopWatchTimer.getDisplayTimeHours(_time!) +
+                                ":" +
+                                StopWatchTimer.getDisplayTimeMinute(_time!) +
+                                ":" +
+                                StopWatchTimer.getDisplayTimeSecond(_time!);
+                        return Text(
+                          _displayTime!,
+                          style: GoogleFonts.kanit(
+                              fontSize: 30,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.deepPurple),
+                        );
+                      })
+                ],
+              ),
+            ],
+          ),
+        ]),
+      ),
+    );
+  }
+
+  Widget _statusOfRun() {
+    return Container(
+      child: Column(
+        children: [
+          Row(
+            children: [
+              Icon(Icons.speed),
+            ],
+          ),
         ],
       ),
     );
