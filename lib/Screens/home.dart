@@ -20,7 +20,6 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  final _screenshotController = ScreenshotController();
   final Set<Polyline> polyline = {};
   Location _location = Location();
   GoogleMapController? _mapController;
@@ -122,14 +121,13 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
-  @override
-  void _screenshotImage() async {
-    final imagenFile = await _screenshotController.capture();
-    final directory = (await getApplicationDocumentsDirectory()).path;
-    var path = '$directory';
+  // void _screenshotImage() async {
+  //   final imagenFile = await _screenshotController.capture();
+  //   final directory = (await getApplicationDocumentsDirectory()).path;
+  //   var path = '$directory';
 
-    ScreenshotController().captureAndSave(path, fileName: _displayTime);
-  }
+  //   ScreenshotController().captureAndSave(path, fileName: _displayTime);
+  // }
 
   void _saveData() async {
     InitStart stopped = InitStart(
@@ -170,35 +168,15 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget _googleMaps() {
-    return Screenshot(
-      controller: _screenshotController,
-      child: GoogleMap(
-        polylines: polyline,
-        myLocationEnabled: true,
-        zoomControlsEnabled: false,
-        onMapCreated: _createdMap,
-        myLocationButtonEnabled: true,
-        initialCameraPosition: CameraPosition(target: _latLng, zoom: 16.0),
-      ),
+    return GoogleMap(
+      polylines: polyline,
+      myLocationEnabled: true,
+      zoomControlsEnabled: false,
+      onMapCreated: _createdMap,
+      myLocationButtonEnabled: true,
+      initialCameraPosition: CameraPosition(target: _latLng, zoom: 16.0),
     );
   }
-
-  // Widget _radialEffects() {
-  //   return Container(
-  //     width: double.infinity,
-  //     height: double.infinity,
-  //     decoration: BoxDecoration(
-  //       gradient: LinearGradient(
-  //         colors: [
-  //           Colors.white,
-  //           Color.fromARGB(0, 255, 255, 255),
-  //           Color.fromARGB(0, 255, 255, 255),
-  //         ],
-  //         stops: [0.4, 0.6, 1],
-  //       ),
-  //     ),
-  //   );
-  // }
 
   Widget _countDays() {
     return Container(

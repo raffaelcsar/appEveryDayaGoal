@@ -34,6 +34,5 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyCuUx7_xhhsjAFzKgypFy2qQDSMVNIypNU"/>
 
-        <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     </application>
 </manifest>
