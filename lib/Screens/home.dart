@@ -174,7 +174,7 @@ class _HomePageState extends State<HomePage> {
       zoomControlsEnabled: false,
       onMapCreated: _createdMap,
       myLocationButtonEnabled: true,
-      initialCameraPosition: CameraPosition(target: _latLng, zoom: 16.0),
+      initialCameraPosition: CameraPosition(target: _latLng, zoom: 20.0),
     );
   }
 

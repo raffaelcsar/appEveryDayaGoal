@@ -5,7 +5,7 @@ Future<void> createNotificationMeta() async {
     content: NotificationContent(
       id: 1,
       channelKey: 'Basic',
-      title: 'Every Day a Goal',
+      title: 'Everyday a Goal',
       body: 'Você atingiu a meta diária, Parabéns!!!',
       bigPicture: 'asset://assets/Rota.jpg',
       notificationLayout: NotificationLayout.BigPicture,

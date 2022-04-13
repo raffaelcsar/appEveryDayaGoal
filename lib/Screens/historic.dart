@@ -104,19 +104,5 @@ class _HistoricPageState extends State<HistoricPage> {
         ),
       ),
     );
-    // onPressed: () => Navigator.push(context,
-    //                       MaterialPageRoute(builder: (context) => HomePage()))
-    //                   .then((value) => _addEntries(value)),
-    //               tooltip: 'Increment',
-    //               child: Icon(Icons.start),
-    //   // return Scaffold(
-    //   appBar: AppBar(
-    //     title: Text("Everyday a Goal"),
-    //   ),
-    //   body: ListView(
-    //     children: _cards,
-    //   ),
-    //    // This trailing comma makes auto-formatting nicer for build methods.
-    // );
   }
 }
